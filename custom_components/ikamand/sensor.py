@@ -1,19 +1,19 @@
 """Sensor data from iKamand."""
+from .const import _LOGGER, DOMAIN, PROBES
+from homeassistant.components.sensor import SensorEntity
 from homeassistant.const import PERCENTAGE, TEMP_CELSIUS
 from homeassistant.helpers.entity import Entity
 
-from .const import DOMAIN, PROBES
 
-
-def setup_platform(hass, config, add_entities, discovery_info=None):
+async def async_setup_entry(hass, config_entry, async_add_entities, discovery_info=None):
     """Set up the iKamand sensors."""
     if discovery_info is None:
         return
-    sensors = []
+    entities = []
     for name in PROBES:
-        sensors.append(iKamandProbeSensor(name))
-    sensors.append(iKamandFanSensor("Fan"))
-    add_entities(sensors, True)
+        entities .append(iKamandProbeSensor(name))
+    entities.append(iKamandFanSensor("Fan"))
+    async_add_entities(entities, True)
 
 
 class iKamandProbeSensor(Entity):

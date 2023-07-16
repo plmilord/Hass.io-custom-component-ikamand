@@ -1,0 +1,18 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Enheten er allerede konfigurert"
+        },
+        "error": {
+            "cannot_connect": "Kunne ikke koble til, vennligst prøv igjen",
+            "unknown": "Ukjent feil"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Vert"
+                }
+            }
+        }
+    }
+}

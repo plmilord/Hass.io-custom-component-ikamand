@@ -1,32 +1,23 @@
 """Support for the EPH Controls Ember themostats."""
-from datetime import timedelta
-import logging
-
+from .const import _LOGGER, DOMAIN
 from homeassistant.components.climate import ClimateEntity
-from homeassistant.components.climate.const import (
-    HVAC_MODE_HEAT,
-    HVAC_MODE_OFF,
-    SUPPORT_TARGET_TEMPERATURE,
-)
+from homeassistant.components.climate.const import SUPPORT_TARGET_TEMPERATURE, HVAC_MODE_HEAT, HVAC_MODE_OFF
 from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
 
-from .const import DOMAIN
-
-_LOGGER = logging.getLogger(__name__)
-
 # Return cached results if last scan was less then this time ago
-SCAN_INTERVAL = timedelta(seconds=30)
+from datetime import timedelta
+SCAN_INTERVAL = timedelta(seconds=15)
 
-OPERATION_LIST = [HVAC_MODE_HEAT, HVAC_MODE_OFF]
+SUPPORT_HVAC = [HVAC_MODE_HEAT, HVAC_MODE_OFF]
 
 
-def setup_platform(hass, config, add_entities, discovery_info=None):
+async def async_setup_entry(hass, config_entry, async_add_entities, discovery_info=None):
     """Set up the iKamand sensors."""
     if discovery_info is None:
         return
     try:
         ikamand = hass.data[DOMAIN]["api"]
-        add_entities([IkamandThermostat(ikamand)])
+        async_add_entities([IkamandThermostat(ikamand)])
     except RuntimeError:
         _LOGGER.error("Cannot connect to iKamand")
         return
@@ -85,18 +76,18 @@ class IkamandThermostat(ClimateEntity):
     @property
     def hvac_modes(self):
         """Return the supported operations."""
-        return OPERATION_LIST
+        return SUPPORT_HVAC
 
-    def set_hvac_mode(self, hvac_mode):
+    async def async_set_hvac_mode(self, hvac_mode):
         """Set the operation mode."""
         if hvac_mode == HVAC_MODE_HEAT:
-            self._ikamand.start_cook(self.target_temperature)
+            await self._ikamand.start_cook(self.target_temperature)
         elif hvac_mode == HVAC_MODE_OFF:
-            self._ikamand.stop_cook()
+            await self._ikamand.stop_cook()
         else:
             _LOGGER.error("Invalid operation mode provided %s", hvac_mode)
 
-    def set_temperature(self, **kwargs):
+    async def async_set_temperature(self, **kwargs):
         """Set new target temperature."""
         temperature = kwargs.get(ATTR_TEMPERATURE)
         if temperature is None:
@@ -108,7 +99,7 @@ class IkamandThermostat(ClimateEntity):
         if temperature > self.max_temp or temperature < self.min_temp:
             return
 
-        self._ikamand.start_cook(temperature)
+        await self._ikamand.start_cook(temperature)
 
     @property
     def min_temp(self):

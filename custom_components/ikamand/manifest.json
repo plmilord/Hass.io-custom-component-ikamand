@@ -1,12 +1,11 @@
 {
-  "domain": "ikamand",
-  "name": "iKamand",
-  "version": "1.0.0",
-  "documentation": "https://github.com/slinkymanbyday/ikamand-ha",
-  "requirements": [
-    "ikamand==0.1.7"
-  ],
-  "codeowners": [
-    "@slinkymanbyday"
-  ]
+    "domain": "ikamand",
+    "name": "iKamand",
+    "codeowners": ["@plmilord", "@slinkymanbyday"],
+    "config_flow": true,
+    "documentation": "https://github.com/plmilord/Hass.io-custom-component-ikamand",
+    "iot_class": "local_push",
+    "issue_tracker": "https://github.com/plmilord/Hass.io-custom-component-ikamand/issues",
+    "requirements": ["ikamand==0.1.7"],
+    "version": "2.0"
 }
