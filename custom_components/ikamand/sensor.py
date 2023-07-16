@@ -1,26 +1,31 @@
 """Sensor data from iKamand."""
-from .const import _LOGGER, DOMAIN, PROBES
+from . import iKamandDevice
+from .const import _LOGGER, API, DOMAIN, PROBES
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.const import PERCENTAGE, TEMP_CELSIUS
 from homeassistant.helpers.entity import Entity
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities, discovery_info=None):
+async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the iKamand sensors."""
-    if discovery_info is None:
-        return
+
+    ikamand = hass.data[DOMAIN][API]
     entities = []
+
     for name in PROBES:
-        entities .append(iKamandProbeSensor(name))
-    entities.append(iKamandFanSensor("Fan"))
+        entities.append(iKamandProbeSensor(name, ikamand, config_entry))
+
+    entities.append(iKamandFanSensor("Fan", ikamand, config_entry))
+
     async_add_entities(entities, True)
 
 
-class iKamandProbeSensor(Entity):
+class iKamandProbeSensor(iKamandDevice, SensorEntity):
     """Represents a iKamand sensor."""
 
-    def __init__(self, item):
-        """Initialize the iKamand sensor."""
+    def __init__(self, item, ikamand, config_entry):
+        """Initialize the device."""
+        super().__init__(ikamand, config_entry)
         self._name = item
         self._state = None
 
@@ -59,11 +64,12 @@ class iKamandProbeSensor(Entity):
         return self.hass.data[DOMAIN]["online"]
 
 
-class iKamandFanSensor(Entity):
+class iKamandFanSensor(iKamandDevice, SensorEntity):
     """Represents a iKamand sensor."""
 
-    def __init__(self, item):
-        """Initialize the iKamand sensor."""
+    def __init__(self, item, ikamand, config_entry):
+        """Initialize the device."""
+        super().__init__(ikamand, config_entry)
         self._name = item
         self._state = None
 

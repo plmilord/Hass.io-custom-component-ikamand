@@ -2,6 +2,7 @@
 import logging
 
 _LOGGER = logging.getLogger(__name__)
+API = "api"
 DATA_LISTENER = "listener"
 DOMAIN = "ikamand"
 PROBES = {

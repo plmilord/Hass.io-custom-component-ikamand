@@ -7,6 +7,7 @@ import voluptuous as vol
 # Import the device class from the component that you want to support
 from .const import (
     _LOGGER,
+    API,
     DATA_LISTENER,
     DOMAIN,
     IKAMAND,
@@ -52,7 +53,7 @@ async def async_setup_entry(hass, config_entry):
     """Set up iKamand from a config entry."""
 
     ikamand = Ikamand(config_entry.data[CONF_HOST])
-    hass.data[DOMAIN][config_entry.entry_id] = {IKAMAND: ikamand, DATA_LISTENER: [config_entry.add_update_listener(update_listener)]}
+    hass.data[DOMAIN][config_entry.entry_id] = {API: ikamand}
 
     hass.data[DOMAIN] = {}
     hass.data[DOMAIN]["api"] = ikamand
@@ -65,27 +66,25 @@ async def async_setup_entry(hass, config_entry):
     hass.data[DOMAIN]["online"] = False
     hass.data[DOMAIN]["fan"] = 0
 
-    def ikamand_update(event_time):
-        """Update data from nextcloud api."""
-        try:
-            ikamand.get_data()
-            hass.data[DOMAIN]["pt"] = ikamand.pit_temp
-            hass.data[DOMAIN]["t1"] = ikamand.probe_1
-            hass.data[DOMAIN]["t2"] = ikamand.probe_2
-            hass.data[DOMAIN]["t3"] = ikamand.probe_3
-            hass.data[DOMAIN]["online"] = ikamand.online
-            hass.data[DOMAIN]["fan"] = ikamand.fan_speed
-        except Exception:
-            _LOGGER.error("iKamand update failed")
-            return False
+    async def ikamand_update():
+        while True:
+            try:
+                ikamand.get_data()
+                hass.data[DOMAIN]["pt"] = ikamand.pit_temp
+                hass.data[DOMAIN]["t1"] = ikamand.probe_1
+                hass.data[DOMAIN]["t2"] = ikamand.probe_2
+                hass.data[DOMAIN]["t3"] = ikamand.probe_3
+                hass.data[DOMAIN]["online"] = ikamand.online
+                hass.data[DOMAIN]["fan"] = ikamand.fan_speed
+            except Exception:
+                _LOGGER.error("iKamand update failed")
+            await asyncio.sleep(15)
 
-    await update_listener(hass, config_entry)
-
-    #track_time_interval(hass, ikamand_update, IKAMAND_SYNC_INTERVAL)
+    hass.loop.create_task(ikamand_update())
 
     for component in IKAMAND_COMPONENTS:
         hass.async_create_task(hass.config_entries.async_forward_entry_setup(config_entry, component))
-#(hass, component, DOMAIN, {}, config)
+
     return True
 
 
@@ -108,10 +107,6 @@ async def async_unload_entry(hass, config_entry) -> bool:
         return True
 
     return False
-
-
-async def update_listener(hass, config_entry):
-    """Handle options update."""
 
 
 class iKamandDevice(Entity):
@@ -139,5 +134,7 @@ class iKamandDevice(Entity):
     def device_info(self):
         """Return the device information for this entity."""
         return {
+            "identifiers": {(DOMAIN)},
+            "model": "iKamand",
             "manufacturer": "Kamado Joe",
         }
