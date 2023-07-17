@@ -26,6 +26,7 @@ class iKamandProbeSensor(iKamandDevice, SensorEntity):
     def __init__(self, item, ikamand, config_entry):
         """Initialize the device."""
         super().__init__(ikamand, config_entry)
+        self._ikamand = ikamand
         self._name = item
         self._state = None
 
@@ -61,7 +62,7 @@ class iKamandProbeSensor(iKamandDevice, SensorEntity):
     @property
     def available(self) -> bool:
         """Return True if entity is available."""
-        return self.hass.data[DOMAIN]["online"]
+        return self._ikamand.online
 
 
 class iKamandFanSensor(iKamandDevice, SensorEntity):
@@ -70,6 +71,7 @@ class iKamandFanSensor(iKamandDevice, SensorEntity):
     def __init__(self, item, ikamand, config_entry):
         """Initialize the device."""
         super().__init__(ikamand, config_entry)
+        self._ikamand = ikamand
         self._name = item
         self._state = None
 
@@ -100,9 +102,9 @@ class iKamandFanSensor(iKamandDevice, SensorEntity):
 
     def update(self):
         """Update the sensor."""
-        self._state = self.hass.data[DOMAIN]["fan"]
+        self._state = self.hass.data[DOMAIN]["fan_speed"]
 
     @property
     def available(self) -> bool:
         """Return True if entity is available."""
-        return self.hass.data[DOMAIN]["online"]
+        return self._ikamand.online

@@ -5,10 +5,6 @@ from homeassistant.components.climate import ClimateEntity
 from homeassistant.components.climate.const import SUPPORT_TARGET_TEMPERATURE, HVAC_MODE_HEAT, HVAC_MODE_OFF
 from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
 
-# Return cached results if last scan was less then this time ago
-from datetime import timedelta
-SCAN_INTERVAL = timedelta(seconds=15)
-
 SUPPORT_HVAC = [HVAC_MODE_HEAT, HVAC_MODE_OFF]
 
 
@@ -82,19 +78,15 @@ class IkamandThermostat(iKamandDevice, ClimateEntity):
         """Return the supported operations."""
         return SUPPORT_HVAC
 
-    #async def async_set_hvac_mode(self, hvac_mode):
     def set_hvac_mode(self, hvac_mode):
         """Set the operation mode."""
         if hvac_mode == HVAC_MODE_HEAT:
-            #await self._ikamand.start_cook(self.target_temperature)
             self._ikamand.start_cook(self.target_temperature)
         elif hvac_mode == HVAC_MODE_OFF:
-            #await self._ikamand.stop_cook()
             self._ikamand.stop_cook()
         else:
             _LOGGER.error("Invalid operation mode provided %s", hvac_mode)
 
-    #async def async_set_temperature(self, **kwargs):
     def set_temperature(self, **kwargs):
         """Set new target temperature."""
         temperature = kwargs.get(ATTR_TEMPERATURE)
@@ -107,7 +99,6 @@ class IkamandThermostat(iKamandDevice, ClimateEntity):
         if temperature > self.max_temp or temperature < self.min_temp:
             return
 
-        #await self._ikamand.start_cook(temperature)
         self._ikamand.start_cook(temperature)
 
     @property
@@ -129,4 +120,4 @@ class IkamandThermostat(iKamandDevice, ClimateEntity):
     @property
     def available(self) -> bool:
         """Return True if entity is available."""
-        return self._ikamand._online
+        return self._ikamand.online

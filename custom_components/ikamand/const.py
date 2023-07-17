@@ -6,10 +6,10 @@ API = "api"
 DATA_LISTENER = "listener"
 DOMAIN = "ikamand"
 PROBES = {
-    "Pit Probe": "pt",
-    "Probe 1": "t1",
-    "Probe 2": "t2",
-    "Probe 3": "t3",
+    "Pit Probe": "pit_temp",
+    "Probe 1": "probe_1",
+    "Probe 2": "probe_2",
+    "Probe 3": "probe_3",
 }
 IKAMAND = "ikamand"
 IKAMAND_COMPONENTS = [

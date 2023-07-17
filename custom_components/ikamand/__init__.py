@@ -59,25 +59,28 @@ async def async_setup_entry(hass, config_entry):
     hass.data[DOMAIN]["api"] = ikamand
     hass.data[DOMAIN]["instance"] = config_entry.data[CONF_HOST]
     # setting initial to zero to help with graphing
-    hass.data[DOMAIN]["pt"] = 0
-    hass.data[DOMAIN]["t1"] = 0
-    hass.data[DOMAIN]["t2"] = 0
-    hass.data[DOMAIN]["t3"] = 0
+    hass.data[DOMAIN]["pit_temp"] = 0
+    hass.data[DOMAIN]["probe_1"] = 0
+    hass.data[DOMAIN]["probe_2"] = 0
+    hass.data[DOMAIN]["probe_3"] = 0
     hass.data[DOMAIN]["online"] = False
-    hass.data[DOMAIN]["fan"] = 0
+    hass.data[DOMAIN]["fan_speed"] = 0
 
     async def ikamand_update():
         while True:
             try:
                 ikamand.get_data()
-                hass.data[DOMAIN]["pt"] = ikamand.pit_temp
-                hass.data[DOMAIN]["t1"] = ikamand.probe_1
-                hass.data[DOMAIN]["t2"] = ikamand.probe_2
-                hass.data[DOMAIN]["t3"] = ikamand.probe_3
-                hass.data[DOMAIN]["online"] = ikamand.online
-                hass.data[DOMAIN]["fan"] = ikamand.fan_speed
             except Exception:
-                _LOGGER.error("iKamand update failed")
+                pass
+
+            if ikamand.online:
+                hass.data[DOMAIN]["pit_temp"] = ikamand.pit_temp
+                hass.data[DOMAIN]["probe_1"] = ikamand.probe_1
+                hass.data[DOMAIN]["probe_2"] = ikamand.probe_2
+                hass.data[DOMAIN]["probe_3"] = ikamand.probe_3
+                hass.data[DOMAIN]["online"] = ikamand.online
+                hass.data[DOMAIN]["fan_speed"] = ikamand.fan_speed
+
             await asyncio.sleep(15)
 
     hass.loop.create_task(ikamand_update())
@@ -134,7 +137,8 @@ class iKamandDevice(Entity):
     def device_info(self):
         """Return the device information for this entity."""
         return {
-            "identifiers": {(DOMAIN)},
-            "model": "iKamand",
+            "identifiers": {(DOMAIN, "Device MAC address")},
             "manufacturer": "Kamado Joe",
+            "name": "iKamand-___E",
+            "sw_version": "1.0.56",
         }
