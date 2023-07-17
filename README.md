@@ -53,7 +53,7 @@ iKamand Probe 1 | Sensor | ? | N/A
 iKamand Probe 2 | Sensor | ? | N/A
 iKamand Probe 3 | Sensor | ? | N/A
 
-✓ = Tested and working
+✓ = Tested and working  
 ? = Not working
 
 ## Task List
