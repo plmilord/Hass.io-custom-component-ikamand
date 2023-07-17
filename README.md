@@ -1,48 +1,68 @@
-# iKamand
+<span align="center">
 
+<a href="https://github.com/plmilord/Hass.io-custom-component-ikamand"><img src="https://raw.githubusercontent.com/plmilord/Hass.io-custom-component-ikamand/master/images/icon.png" width="150"></a>
 
-**This component will set up the following platforms.**
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/hacs/integration)
+[![GitHub release](https://img.shields.io/github/release/plmilord/Hass.io-custom-component-ikamand.svg)](https://GitHub.com/plmilord/Hass.io-custom-component-ikamand/releases/)
+[![HA integration usage](https://img.shields.io/badge/dynamic/json?color=41BDF5&logo=home-assistant&label=integration%20usage&suffix=%20installs&cacheSeconds=15600&url=https://analytics.home-assistant.io/custom_integrations.json&query=$.ikamand.total)](https://analytics.home-assistant.io/custom_integrations.json)
 
-| Platform        | Description                                                               |
-| --------------- | ------------------------------------------------------------------------- |
-| `sensor`        | Show info from iKamand. |
-| `climate`       | Control the iKamand. |
+# Home Assistant custom component - iKamand
 
+</span>
+
+Since the event where Kamado Joe stopped supporting his iKamand service... I tried to find a solution to give a second life to this module and avoid the dump!
+
+**iKamand** is based on similar projects and the work of many people. During installation, all components are created in accordance with the iKamand!
+
+## What you need
+
+- Kamado Joe Kamado Joe iKamand Smart Temperature Control and Monitoring Device
 
 ## Installation
 
+You can install this integration via [HACS](#hacs) or [manually](#manual).
+
 ### HACS
-1. Add this repository as a cutom repository in HACS
-2. Install iKamand
-3. Add config into configuration.yaml as per below config section.
-4. Restart HA
 
-### Custom
+Search for the iKamand integration and choose install. Reboot Home Assistant and configure the iKamand integration via the integrations page or press the blue button below.
 
-1. Using the tool of choice open the directory (folder) for your HA configuration (where you find `configuration.yaml`).
-2. If you do not have a `custom_components` directory (folder) there, you need to create it.
-3. In the `custom_components` directory (folder) create a new folder called `ikamand`.
-4. Download _all_ the files from the `custom_components/ikamand/` directory (folder) in this repository.
-5. Place the files you downloaded in the new directory (folder) you created.
-6. Add the config into configuration.yaml
-7. Restart Home Assistant
+[![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=ikamand)
 
 
-## Configuration
+### Manual
 
-```
-ikamand:
-  ip_address: <iKamand IP Address>
-```
+Copy the `custom_components/ikamand` to your custom_components folder. Reboot Home Assistant and configure the iKamand integration via the integrations page or press the blue button below.
 
-## Contributions are welcome!
-
-If you want to contribute to this please read the [Contribution guidelines](CONTRIBUTING.md)
-
-## Credits
-
-This project was generated from [@oncleben31](https://github.com/oncleben31)'s [Home Assistant Custom Component Cookiecutter](https://github.com/oncleben31/cookiecutter-homeassistant-custom-component) template.
-
-Code template was mainly taken from [@Ludeeus](https://github.com/ludeeus)'s [integration_blueprint][integration_blueprint] template
+[![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=ikamand)
 
 
+## Preview
+
+<span align="center">
+
+<a href="https://github.com/plmilord/Hass.io-custom-component-ikamand"><img src="https://raw.githubusercontent.com/plmilord/Hass.io-custom-component-ikamand/master/images/preview.png" width="500"></a>
+
+</span>
+
+Entity | Type | Tested | Programmed entity attributes
+------ | ---- | ------ | ----------------------------
+iKamand | Climate | ✓ | N/A
+iKamand Fan | Sensor | ? | N/A
+iKamand Pit Probe | Sensor | ? | N/A
+iKamand Probe 1 | Sensor | ? | N/A
+iKamand Probe 2 | Sensor | ? | N/A
+iKamand Probe 3 | Sensor | ? | N/A
+
+✓ = Tested and working
+? = Not working
+
+## Task List
+
+- [ ] Make the sensors work properly
+- [ ] Bring the ability to configure this custom component via the entries in configuration.yaml
+- [ ] Integrate the main <ikamand> program to improve connectivity, better error handling and eliminate dependency
+
+## Inspiration / Credits
+
+- https://github.com/slinkymanbyday/ikamand-ha | Forked project, initial inspiration!
+- https://github.com/slinkymanbyday/ikamand | Main program in Python to interface the iKamand module.
