@@ -60,7 +60,7 @@ iKamand Probe 3 | Sensor | ? | N/A
 
 - [ ] Make the sensors work properly
 - [ ] Bring the ability to configure this custom component via the entries in configuration.yaml
-- [ ] Integrate the main <ikamand> program to improve connectivity, better error handling and eliminate dependency
+- [ ] Integrate the main ```ikamand``` program to improve connectivity, better error handling and eliminate dependency
 
 ## Inspiration / Credits
 
