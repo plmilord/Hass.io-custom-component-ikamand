@@ -47,11 +47,11 @@ Copy the `custom_components/ikamand` to your custom_components folder. Reboot Ho
 Entity | Type | Tested | Programmed entity attributes
 ------ | ---- | ------ | ----------------------------
 iKamand | Climate | ✓ | N/A
-iKamand Fan | Sensor | ✓ | N/A
-iKamand Pit Probe | Sensor | ✓ | N/A
-iKamand Probe 1 | Sensor | ✓ | N/A
-iKamand Probe 2 | Sensor | ✓ | N/A
-iKamand Probe 3 | Sensor | ✓ | N/A
+Fan | Sensor | ✓ | N/A
+Pit Probe | Sensor | ✓ | N/A
+Probe 1 | Sensor | ✓ | N/A
+Probe 2 | Sensor | ✓ | N/A
+Probe 3 | Sensor | ✓ | N/A
 
 ✓ = Tested and working  
 ? = Not working
