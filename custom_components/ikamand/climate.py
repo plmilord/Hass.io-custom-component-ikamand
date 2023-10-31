@@ -5,13 +5,16 @@ from homeassistant.components.climate import ClimateEntity
 from homeassistant.components.climate.const import SUPPORT_TARGET_TEMPERATURE, HVAC_MODE_HEAT, HVAC_MODE_OFF
 from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
 
+from datetime import timedelta
+SCAN_INTERVAL = timedelta(seconds=5)
+
 SUPPORT_HVAC = [HVAC_MODE_HEAT, HVAC_MODE_OFF]
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the iKamand sensors."""
 
-    ikamand = hass.data[DOMAIN][API]
+    ikamand = hass.data[DOMAIN][config_entry.entry_id][API]
     entities = []
 
     entities.append(IkamandThermostat(ikamand, config_entry))
@@ -40,7 +43,7 @@ class IkamandThermostat(iKamandDevice, ClimateEntity):
     @property
     def unique_id(self):
         """Return the unique ID for this sensor."""
-        return f"{self.hass.data[DOMAIN]['instance']}#thermostat"
+        return f"{self._ikamand.mac_address}#ikamand"
 
     @property
     def temperature_unit(self):
@@ -60,7 +63,6 @@ class IkamandThermostat(iKamandDevice, ClimateEntity):
     @property
     def target_temperature_step(self):
         """Return the supported step of target temperature."""
-
         return 1
 
     @property
@@ -78,16 +80,16 @@ class IkamandThermostat(iKamandDevice, ClimateEntity):
         """Return the supported operations."""
         return SUPPORT_HVAC
 
-    def set_hvac_mode(self, hvac_mode):
+    async def async_set_hvac_mode(self, hvac_mode):
         """Set the operation mode."""
         if hvac_mode == HVAC_MODE_HEAT:
-            self._ikamand.start_cook(self.target_temperature)
+            await self._ikamand.start_cook(self.target_temperature)
         elif hvac_mode == HVAC_MODE_OFF:
-            self._ikamand.stop_cook()
+            await self._ikamand.stop_cook()
         else:
             _LOGGER.error("Invalid operation mode provided %s", hvac_mode)
 
-    def set_temperature(self, **kwargs):
+    async def async_set_temperature(self, **kwargs):
         """Set new target temperature."""
         temperature = kwargs.get(ATTR_TEMPERATURE)
         if temperature is None:
@@ -99,23 +101,17 @@ class IkamandThermostat(iKamandDevice, ClimateEntity):
         if temperature > self.max_temp or temperature < self.min_temp:
             return
 
-        self._ikamand.start_cook(temperature)
+        await self._ikamand.start_cook(temperature)
 
     @property
     def min_temp(self):
         """Return the minimum temperature."""
-
         return 0
 
     @property
     def max_temp(self):
         """Return the maximum temperature."""
-
         return 390
-
-    def update(self):
-        """Get the latest data."""
-        self._ikamand.get_data()
 
     @property
     def available(self) -> bool:

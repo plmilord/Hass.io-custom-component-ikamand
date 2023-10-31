@@ -1,26 +1,16 @@
 """iKamand integration."""
 import asyncio
-
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 
 # Import the device class from the component that you want to support
-from .const import (
-    _LOGGER,
-    API,
-    DATA_LISTENER,
-    DOMAIN,
-    IKAMAND,
-    IKAMAND_COMPONENTS,
-)
+from .const import _LOGGER, API, DOMAIN, IKAMAND_COMPONENTS
+from .ikamand import Ikamand
+from datetime import timedelta
 from homeassistant.const import CONF_HOST
+from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.event import track_time_interval
-from ikamand.ikamand import Ikamand
-
-from datetime import timedelta
-IKAMAND_SYNC_INTERVAL = timedelta(seconds=15)
-
 
 CONFIG_SCHEMA = vol.Schema(
     {
@@ -55,35 +45,13 @@ async def async_setup_entry(hass, config_entry):
     ikamand = Ikamand(config_entry.data[CONF_HOST])
     hass.data[DOMAIN][config_entry.entry_id] = {API: ikamand}
 
-    hass.data[DOMAIN] = {}
-    hass.data[DOMAIN]["api"] = ikamand
-    hass.data[DOMAIN]["instance"] = config_entry.data[CONF_HOST]
-    # setting initial to zero to help with graphing
-    hass.data[DOMAIN]["pit_temp"] = 0
-    hass.data[DOMAIN]["probe_1"] = 0
-    hass.data[DOMAIN]["probe_2"] = 0
-    hass.data[DOMAIN]["probe_3"] = 0
-    hass.data[DOMAIN]["online"] = False
-    hass.data[DOMAIN]["fan_speed"] = 0
+    await ikamand.get_info()
 
-    async def ikamand_update():
-        while True:
-            try:
-                ikamand.get_data()
-            except Exception:
-                pass
+    if not ikamand._online:
+        _LOGGER.error("Failed to connect iKamand at %s", config_entry.data[CONF_HOST])
+        raise ConfigEntryNotReady
 
-            if ikamand.online:
-                hass.data[DOMAIN]["pit_temp"] = ikamand.pit_temp
-                hass.data[DOMAIN]["probe_1"] = ikamand.probe_1
-                hass.data[DOMAIN]["probe_2"] = ikamand.probe_2
-                hass.data[DOMAIN]["probe_3"] = ikamand.probe_3
-                hass.data[DOMAIN]["online"] = ikamand.online
-                hass.data[DOMAIN]["fan_speed"] = ikamand.fan_speed
-
-            await asyncio.sleep(15)
-
-    hass.loop.create_task(ikamand_update())
+    hass.loop.create_task(ikamand.get_data())
 
     for component in IKAMAND_COMPONENTS:
         hass.async_create_task(hass.config_entries.async_forward_entry_setup(config_entry, component))
@@ -102,8 +70,6 @@ async def async_unload_entry(hass, config_entry) -> bool:
             ]
         )
     )
-
-    hass.data[DOMAIN][config_entry.entry_id][DATA_LISTENER]:listener()
 
     if unload_ok:
         hass.data[DOMAIN].pop(config_entry.entry_id)
@@ -137,8 +103,8 @@ class iKamandDevice(Entity):
     def device_info(self):
         """Return the device information for this entity."""
         return {
-            "identifiers": {(DOMAIN, "Device MAC address")},
+            "identifiers": {(DOMAIN, self._ikamand.mac_address)},
             "manufacturer": "Kamado Joe",
-            "name": "iKamand-___E",
-            "sw_version": "1.0.56",
+            "name": f"iKamand-{self._ikamand.mac_address[-4:]}",
+            "sw_version": self._ikamand.firmware_version,
         }

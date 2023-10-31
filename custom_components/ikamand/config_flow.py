@@ -3,17 +3,11 @@ import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 
 # Import the device class from the component that you want to support
-from .const import (
-    _LOGGER,
-    DATA_LISTENER,
-    DOMAIN,
-    IKAMAND_COMPONENTS,
-)
-from ikamand.ikamand import Ikamand
+from .const import _LOGGER, DOMAIN, IKAMAND_COMPONENTS
+from .ikamand import Ikamand
 from homeassistant import config_entries, core, exceptions
 from homeassistant.const import CONF_HOST
 from homeassistant.core import callback
-
 
 DATA_SCHEMA = vol.Schema(
     {
@@ -64,11 +58,13 @@ async def validate_input(hass, data):
         if entry.data[CONF_HOST] == data[CONF_HOST]:
             raise AlreadyConfigured
 
-    #ikamand = Ikamand(data[CONF_HOST])
-    #connected = await ikamand.online()
-    #if not connected:
-        #_LOGGER.error("Failed to connect to iKamand %s", data[CONF_HOST])
-        #raise CannotConnect
+    ikamand = Ikamand(data[CONF_HOST])
+
+    await ikamand.get_info()
+
+    if not ikamand._online:
+        _LOGGER.error("Failed to connect iKamand at %s", data[CONF_HOST])
+        raise CannotConnect
 
 
 class CannotConnect(exceptions.HomeAssistantError):
