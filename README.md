@@ -40,27 +40,27 @@ Copy the `custom_components/ikamand` to your custom_components folder. Reboot Ho
 
 <span align="center">
 
-<a href="https://github.com/plmilord/Hass.io-custom-component-ikamand"><img src="https://raw.githubusercontent.com/plmilord/Hass.io-custom-component-ikamand/master/images/preview.png" width="500"></a>
+<a href="https://github.com/plmilord/Hass.io-custom-component-ikamand"><img src="https://raw.githubusercontent.com/plmilord/Hass.io-custom-component-ikamand/master/images/preview_1.png" width="500"></a>
 
 </span>
 
 Entity | Type | Tested | Programmed entity attributes
 ------ | ---- | ------ | ----------------------------
 iKamand | Climate | ✓ | N/A
-iKamand Fan | Sensor | ? | N/A
-iKamand Pit Probe | Sensor | ? | N/A
-iKamand Probe 1 | Sensor | ? | N/A
-iKamand Probe 2 | Sensor | ? | N/A
-iKamand Probe 3 | Sensor | ? | N/A
+iKamand Fan | Sensor | ✓ | N/A
+iKamand Pit Probe | Sensor | ✓ | N/A
+iKamand Probe 1 | Sensor | ✓ | N/A
+iKamand Probe 2 | Sensor | ✓ | N/A
+iKamand Probe 3 | Sensor | ✓ | N/A
 
 ✓ = Tested and working  
 ? = Not working
 
 ## Task List
 
-- [ ] Make the sensors work properly
+- [x] Make the sensors work properly
 - [ ] Bring the ability to configure this custom component via the entries in configuration.yaml
-- [ ] Integrate the main ```ikamand``` program to improve connectivity, better error handling and eliminate dependency
+- [x] Integrate the main ```ikamand``` program to improve connectivity, better error handling and eliminate dependency
 
 ## Inspiration / Credits
 
