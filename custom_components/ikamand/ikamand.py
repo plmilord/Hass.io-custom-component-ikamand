@@ -33,20 +33,12 @@ from .const import (
 )
 from urllib.parse import parse_qs
 
-HTTP_ERRORS = (
-    requests.exceptions.ConnectionError,
-    requests.exceptions.HTTPError,
-)
-
-TIMEOUT = 5
-
 
 class Ikamand:
     """A class for the iKamand API."""
 
     def __init__(self, host_ip):
         """Initialize the class."""
-        #self._session = requests.session()
         self.base_url = f"http://{host_ip}/cgi-bin/"
         self._data = {}
         self._info = {}
