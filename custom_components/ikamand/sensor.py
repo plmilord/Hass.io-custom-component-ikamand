@@ -45,7 +45,6 @@ class iKamandFanSensor(iKamandDevice, SensorEntity):
     @property
     def state(self):
         """Return the state for this sensor."""
-        #return self._ikamand['fan_speed']
         return self._ikamand.fan_speed
 
     @property
