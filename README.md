@@ -58,8 +58,9 @@ Probe 3 | Sensor | ✓ | N/A
 
 ## Task List
 
-- [x] Make the sensors work properly
 - [ ] Bring the ability to configure this custom component via the entries in configuration.yaml
+- [x] Make the sensors work properly
+- [x] Support Celsius to Fahrenheit
 - [x] Integrate the main ```ikamand``` program to improve connectivity, better error handling and eliminate dependency
 
 ## Inspiration / Credits
