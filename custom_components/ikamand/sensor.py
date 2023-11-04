@@ -2,7 +2,8 @@
 from . import iKamandDevice
 from .const import _LOGGER, API, DOMAIN
 from homeassistant.components.sensor import SensorEntity
-from homeassistant.const import PERCENTAGE, TEMP_CELSIUS
+from homeassistant.const import PERCENTAGE, UnitOfTemperature
+from homeassistant.util.unit_conversion import TemperatureConverter
 
 from datetime import timedelta
 SCAN_INTERVAL = timedelta(seconds=1)
@@ -85,7 +86,11 @@ class iKamandPitSensor(iKamandDevice, SensorEntity):
     @property
     def state(self):
         """Return the state for this sensor."""
-        return self._ikamand.pit_temp
+        if self._ikamand.pit_temp != None:
+            if self.hass.config.units.temperature_unit == UnitOfTemperature.FAHRENHEIT:
+                return round(TemperatureConverter.convert(self._ikamand.pit_temp, UnitOfTemperature.CELSIUS, UnitOfTemperature.FAHRENHEIT))
+            return self._ikamand.pit_temp
+        return None
 
     @property
     def unique_id(self):
@@ -95,7 +100,9 @@ class iKamandPitSensor(iKamandDevice, SensorEntity):
     @property
     def unit_of_measurement(self):
         """Return the unit of measurement the value is expressed in."""
-        return TEMP_CELSIUS
+        if self.hass.config.units.temperature_unit == UnitOfTemperature.FAHRENHEIT:
+            return UnitOfTemperature.FAHRENHEIT
+        return UnitOfTemperature.CELSIUS
 
     @property
     def available(self) -> bool:
@@ -125,7 +132,11 @@ class iKamandProbeSensor(iKamandDevice, SensorEntity):
     @property
     def state(self):
         """Return the state for this sensor."""
-        return getattr(self._ikamand, f"probe_{self._name}")
+        if getattr(self._ikamand, f"probe_{self._name}") != None:
+            if self.hass.config.units.temperature_unit == UnitOfTemperature.FAHRENHEIT:
+                return round(TemperatureConverter.convert(getattr(self._ikamand, f"probe_{self._name}"), UnitOfTemperature.CELSIUS, UnitOfTemperature.FAHRENHEIT))
+            return getattr(self._ikamand, f"probe_{self._name}")
+        return None
 
     @property
     def unique_id(self):
@@ -135,7 +146,9 @@ class iKamandProbeSensor(iKamandDevice, SensorEntity):
     @property
     def unit_of_measurement(self):
         """Return the unit of measurement the value is expressed in."""
-        return TEMP_CELSIUS
+        if self.hass.config.units.temperature_unit == UnitOfTemperature.FAHRENHEIT:
+            return UnitOfTemperature.FAHRENHEIT
+        return UnitOfTemperature.CELSIUS
 
     @property
     def available(self) -> bool:

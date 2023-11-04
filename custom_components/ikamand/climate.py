@@ -3,7 +3,8 @@ from . import iKamandDevice
 from .const import _LOGGER, API, DOMAIN
 from homeassistant.components.climate import ClimateEntity
 from homeassistant.components.climate.const import SUPPORT_TARGET_TEMPERATURE, HVAC_MODE_HEAT, HVAC_MODE_OFF
-from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
+from homeassistant.const import ATTR_TEMPERATURE, UnitOfTemperature
+from homeassistant.util.unit_conversion import TemperatureConverter
 
 from datetime import timedelta
 SCAN_INTERVAL = timedelta(seconds=5)
@@ -48,16 +49,24 @@ class IkamandThermostat(iKamandDevice, ClimateEntity):
     @property
     def temperature_unit(self):
         """Return the unit of measurement which this thermostat uses."""
-        return TEMP_CELSIUS
+        if self.hass.config.units.temperature_unit == UnitOfTemperature.FAHRENHEIT:
+            return UnitOfTemperature.FAHRENHEIT
+        return UnitOfTemperature.CELSIUS
 
     @property
     def current_temperature(self):
         """Return the current temperature."""
-        return self._ikamand.pit_temp
+        if self._ikamand.pit_temp != None:
+            if self.hass.config.units.temperature_unit == UnitOfTemperature.FAHRENHEIT:
+                return round(TemperatureConverter.convert(self._ikamand.pit_temp, UnitOfTemperature.CELSIUS, UnitOfTemperature.FAHRENHEIT))
+            return self._ikamand.pit_temp
+        return None
 
     @property
     def target_temperature(self):
         """Return the temperature we try to reach."""
+        if self.hass.config.units.temperature_unit == UnitOfTemperature.FAHRENHEIT:
+            return round(TemperatureConverter.convert(self._ikamand.target_pit_temp, UnitOfTemperature.CELSIUS, UnitOfTemperature.FAHRENHEIT))
         return self._ikamand.target_pit_temp
 
     @property
@@ -92,26 +101,25 @@ class IkamandThermostat(iKamandDevice, ClimateEntity):
     async def async_set_temperature(self, **kwargs):
         """Set new target temperature."""
         temperature = kwargs.get(ATTR_TEMPERATURE)
-        if temperature is None:
-            return
-
-        if temperature == self.target_temperature:
-            return
-
-        if temperature > self.max_temp or temperature < self.min_temp:
-            return
-
+        if self.hass.config.units.temperature_unit == UnitOfTemperature.FAHRENHEIT:
+            temperature = round(TemperatureConverter.convert(temperature, UnitOfTemperature.FAHRENHEIT, UnitOfTemperature.CELSIUS))
         await self._ikamand.start_cook(temperature)
 
     @property
     def min_temp(self):
         """Return the minimum temperature."""
-        return 0
+        """The iKamand can control between 150°F-500°F (66°C-260°C)"""
+        if self.hass.config.units.temperature_unit == UnitOfTemperature.FAHRENHEIT:
+            return 150
+        return 66
 
     @property
     def max_temp(self):
         """Return the maximum temperature."""
-        return 390
+        """The iKamand can control between 150°F-500°F (66°C-260°C)"""
+        if self.hass.config.units.temperature_unit == UnitOfTemperature.FAHRENHEIT:
+            return 500
+        return 260
 
     @property
     def available(self) -> bool:
