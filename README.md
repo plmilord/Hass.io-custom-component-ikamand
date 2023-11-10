@@ -22,7 +22,7 @@ Since the event where Kamado Joe stopped supporting his iKamand service... I tri
 
 <span align="center">
 
-<a href="https://github.com/plmilord/Hass.io-custom-component-ikamand"><img src="https://raw.githubusercontent.com/plmilord/Hass.io-custom-component-ikamand/master/images/connect.png" width="800"></a>
+<img src="https://raw.githubusercontent.com/plmilord/Hass.io-custom-component-ikamand/master/images/connect.png" width="800"></a>
 
 </span>
 
@@ -48,7 +48,7 @@ Copy the `custom_components/ikamand` to your custom_components folder. Reboot Ho
 
 <span align="center">
 
-<a href="https://github.com/plmilord/Hass.io-custom-component-ikamand"><img src="https://raw.githubusercontent.com/plmilord/Hass.io-custom-component-ikamand/master/images/preview_1.png" width="800"></a>
+<img src="https://raw.githubusercontent.com/plmilord/Hass.io-custom-component-ikamand/master/images/preview_1.png" width="600"></a>
 
 </span>
 
@@ -67,7 +67,6 @@ Probe 3 | Sensor | ✓ | N/A
 ## Task List
 
 - [ ] Bring the ability to configure this custom component via the entries in configuration.yaml
-
 - [x] Integrate the main ```ikamand``` program to improve connectivity, better error handling and eliminate dependency
 - [x] Make the sensors work properly
 - [x] Support Celsius to Fahrenheit
