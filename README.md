@@ -18,7 +18,7 @@ Since the event where Kamado Joe stopped supporting his iKamand service... I tri
 
 - Kamado Joe Kamado Joe iKamand Smart Temperature Control and Monitoring Device
 
-### How to connect your iKamand to your WiFi router
+### How to connect the iKamand module to your WiFi router
 
 <span align="center">
 
