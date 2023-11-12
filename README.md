@@ -56,7 +56,6 @@ Entity | Type | Tested | Programmed entity attributes
 ------ | ---- | ------ | ----------------------------
 iKamand | Climate | ✓ | N/A
 Fan | Sensor | ✓ | N/A
-Pit | Sensor | ✓ | N/A
 Probe 1 | Sensor | ✓ | N/A
 Probe 2 | Sensor | ✓ | N/A
 Probe 3 | Sensor | ✓ | N/A
