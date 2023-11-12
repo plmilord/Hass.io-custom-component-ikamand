@@ -75,11 +75,6 @@ class IkamandThermostat(iKamandDevice, ClimateEntity):
         return 1
 
     @property
-    def hvac_action(self):
-        """Return current HVAC action."""
-        return HVAC_MODE_HEAT
-
-    @property
     def hvac_mode(self):
         """Return current operation ie. heat, cool, idle."""
         return HVAC_MODE_HEAT if self._ikamand.cooking else HVAC_MODE_OFF

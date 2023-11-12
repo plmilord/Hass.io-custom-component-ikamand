@@ -54,16 +54,24 @@ class Ikamand:
         url = f"{self.base_url}info"
 
         loop = asyncio.get_running_loop()
-        response = await loop.run_in_executor(None, lambda: requests.get(url))
 
-        if response.status_code in GOOD_HTTP_CODES:
-            result = parse_qs(response.text)
-            self._info = result
-            self._online = True
-        else:
+        try:
+            response = await loop.run_in_executor(None, lambda: requests.get(url))
+
+            if response.status_code in GOOD_HTTP_CODES:
+                result = parse_qs(response.text)
+                self._info = result
+                self._online = True
+            else:
+                self._online = False
+
+            #_LOGGER.info("self._info = %s", self._info)
+
+        except requests.RequestException as e:
             self._online = False
 
-        #_LOGGER.info("self._info = %s", self._info)
+        except Exception as e:
+            self._online = False
 
     async def get_data(self):
         """Get grill data."""
@@ -71,16 +79,24 @@ class Ikamand:
 
         while True:
             loop = asyncio.get_running_loop()
-            response = await loop.run_in_executor(None, lambda: requests.get(url))
 
-            if response.status_code in GOOD_HTTP_CODES:
-                result = parse_qs(response.text)
-                self._data = result
-                self._online = True
-            else:
+            try:
+                response = await loop.run_in_executor(None, lambda: requests.get(url))
+
+                if response.status_code in GOOD_HTTP_CODES:
+                    result = parse_qs(response.text)
+                    self._data = result
+                    self._online = True
+                else:
+                    self._online = False
+
+                #_LOGGER.info("self._data = %s", self._data)
+
+            except requests.RequestException as e:
                 self._online = False
 
-            #_LOGGER.info("self._data = %s", self._data)
+            except Exception as e:
+                self._online = False
 
             await asyncio.sleep(5)
 
@@ -100,12 +116,19 @@ class Ikamand:
         }
 
         loop = asyncio.get_running_loop()
-        response = await loop.run_in_executor(None, lambda: requests.post(url, headers=self.headers, data=data))
 
-        if response.status_code in GOOD_HTTP_CODES:
-            self._online = True
-        else:
-            _LOGGER.error("Error connecting to iKamand, %s", error)
+        try:
+            response = await loop.run_in_executor(None, lambda: requests.post(url, headers=self.headers, data=data))
+
+            if response.status_code in GOOD_HTTP_CODES:
+                self._online = True
+            else:
+                self._online = False
+
+        except requests.RequestException as e:
+            self._online = False
+
+        except Exception as e:
             self._online = False
 
     async def stop_cook(self):
@@ -123,12 +146,19 @@ class Ikamand:
         }
 
         loop = asyncio.get_running_loop()
-        response = await loop.run_in_executor(None, lambda: requests.post(url, headers=self.headers, data=data))
 
-        if response.status_code in GOOD_HTTP_CODES:
-            self._online = True
-        else:
-            _LOGGER.error("Error connecting to iKamand, %s", error)
+        try:
+            response = await loop.run_in_executor(None, lambda: requests.post(url, headers=self.headers, data=data))
+
+            if response.status_code in GOOD_HTTP_CODES:
+                self._online = True
+            else:
+                self._online = False
+
+        except requests.RequestException as e:
+            self._online = False
+
+        except Exception as e:
             self._online = False
 
     async def start_grill(self):
@@ -142,12 +172,19 @@ class Ikamand:
         }
 
         loop = asyncio.get_running_loop()
-        response = await loop.run_in_executor(None, lambda: requests.post(url, headers=self.headers, data=data))
 
-        if response.status_code in GOOD_HTTP_CODES:
-            self._online = True
-        else:
-            _LOGGER.error("Error connecting to iKamand, %s", error)
+        try:
+            response = await loop.run_in_executor(None, lambda: requests.post(url, headers=self.headers, data=data))
+
+            if response.status_code in GOOD_HTTP_CODES:
+                self._online = True
+            else:
+                self._online = False
+
+        except requests.RequestException as e:
+            self._online = False
+
+        except Exception as e:
             self._online = False
 
     async def stop_grill(self):
@@ -161,12 +198,19 @@ class Ikamand:
         }
 
         loop = asyncio.get_running_loop()
-        response = await loop.run_in_executor(None, lambda: requests.post(url, headers=self.headers, data=data))
 
-        if response.status_code in GOOD_HTTP_CODES:
-            self._online = True
-        else:
-            _LOGGER.error("Error connecting to iKamand, %s", error)
+        try:
+            response = await loop.run_in_executor(None, lambda: requests.post(url, headers=self.headers, data=data))
+
+            if response.status_code in GOOD_HTTP_CODES:
+                self._online = True
+            else:
+                self._online = False
+
+        except requests.RequestException as e:
+            self._online = False
+
+        except Exception as e:
             self._online = False
 
     @property

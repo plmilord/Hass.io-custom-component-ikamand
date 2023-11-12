@@ -45,7 +45,6 @@ class iKamandConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             except CannotConnect:
                 errors["base"] = "cannot_connect"
             except Exception:
-                _LOGGER.exception("Unexpected exception")
                 errors["base"] = "unknown"
 
         return self.async_show_form(step_id="user", data_schema=DATA_SCHEMA, errors=errors)

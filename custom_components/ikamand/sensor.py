@@ -16,7 +16,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     entities = []
 
     entities.append(iKamandFanSensor("Fan", ikamand, config_entry))
-    entities.append(iKamandPitSensor("Pit", ikamand, config_entry))
 
     for i in range(0, 3):
         entities.append(iKamandProbeSensor(i + 1, ikamand, config_entry))
@@ -57,52 +56,6 @@ class iKamandFanSensor(iKamandDevice, SensorEntity):
     def unit_of_measurement(self):
         """Return the unit of measurement the value is expressed in."""
         return PERCENTAGE
-
-    @property
-    def available(self) -> bool:
-        """Return True if entity is available."""
-        return self._ikamand.online
-
-
-class iKamandPitSensor(iKamandDevice, SensorEntity):
-    """Represents a iKamand sensor."""
-
-    def __init__(self, item, ikamand, config_entry):
-        """Initialize the device."""
-        super().__init__(ikamand, config_entry)
-        self._ikamand = ikamand
-        self._name = item
-
-    @property
-    def icon(self):
-        """Return the icon for this sensor."""
-        return "mdi:thermometer"
-
-    @property
-    def name(self):
-        """Return the name for this sensor."""
-        return self._name
-
-    @property
-    def state(self):
-        """Return the state for this sensor."""
-        if self._ikamand.pit_temp != None:
-            if self.hass.config.units.temperature_unit == UnitOfTemperature.FAHRENHEIT:
-                return round(TemperatureConverter.convert(self._ikamand.pit_temp, UnitOfTemperature.CELSIUS, UnitOfTemperature.FAHRENHEIT))
-            return self._ikamand.pit_temp
-        return None
-
-    @property
-    def unique_id(self):
-        """Return the unique ID for this sensor."""
-        return f"{self._ikamand.mac_address}#{self._name}"
-
-    @property
-    def unit_of_measurement(self):
-        """Return the unit of measurement the value is expressed in."""
-        if self.hass.config.units.temperature_unit == UnitOfTemperature.FAHRENHEIT:
-            return UnitOfTemperature.FAHRENHEIT
-        return UnitOfTemperature.CELSIUS
 
     @property
     def available(self) -> bool:
