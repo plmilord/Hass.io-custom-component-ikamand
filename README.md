@@ -65,6 +65,7 @@ Probe 3 | Sensor | ✓ | N/A
 
 ### To do
 
+- [ ] Better error and exception handling to make this component transparent to the user
 - [ ] Bring the ability to configure this custom component via the entries in configuration.yaml
 - [ ] Setup an option to override the Home Assistant unit system for this custom component
 
