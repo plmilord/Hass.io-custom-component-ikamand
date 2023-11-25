@@ -16,7 +16,7 @@ Since the event where Kamado Joe stopped supporting his iKamand service... I tri
 
 ## What you need
 
-- Kamado Joe Kamado Joe iKamand Smart Temperature Control and Monitoring Device
+- Kamado Joe iKamand Smart Temperature Control and Monitoring Device
 
 ### How to connect the iKamand module to your WiFi router
 
@@ -36,13 +36,11 @@ Search for the iKamand integration and choose install. Reboot Home Assistant and
 
 [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=ikamand)
 
-
 ### Manual
 
 Copy the `custom_components/ikamand` to your custom_components folder. Reboot Home Assistant and configure the iKamand integration via the integrations page or press the blue button below.
 
 [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=ikamand)
-
 
 ## Preview
 
@@ -65,7 +63,13 @@ Probe 3 | Sensor | ✓ | N/A
 
 ## Task List
 
+### To do
+
 - [ ] Bring the ability to configure this custom component via the entries in configuration.yaml
+- [ ] Setup an option to override the Home Assistant unit system for this custom component
+
+### Completed
+
 - [x] Integrate the main ```ikamand``` program to improve connectivity, better error handling and eliminate dependency
 - [x] Make the sensors work properly
 - [x] Support Celsius to Fahrenheit
