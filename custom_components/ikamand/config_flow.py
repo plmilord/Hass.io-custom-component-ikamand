@@ -1,11 +1,10 @@
 """Config flow for iKamand integration."""
-import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 
 # Import the device class from the component that you want to support
-from .const import _LOGGER, DOMAIN, IKAMAND_COMPONENTS
+from .const import _LOGGER, DOMAIN
 from .ikamand import Ikamand
-from homeassistant import config_entries, core, exceptions
+from homeassistant import config_entries, exceptions
 from homeassistant.const import CONF_HOST
 from homeassistant.core import callback
 
@@ -62,7 +61,6 @@ async def validate_input(hass, data):
     await ikamand.get_info()
 
     if not ikamand._online:
-        _LOGGER.error("Failed to connect iKamand at %s", data[CONF_HOST])
         raise CannotConnect
 
 

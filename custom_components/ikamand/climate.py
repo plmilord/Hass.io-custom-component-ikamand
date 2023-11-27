@@ -1,4 +1,4 @@
-"""Support for the EPH Controls Ember themostats."""
+"""iKamand thermostats."""
 from . import iKamandDevice
 from .const import _LOGGER, API, DOMAIN
 from homeassistant.components.climate import ClimateEntity
@@ -13,7 +13,7 @@ SUPPORT_HVAC = [HVAC_MODE_HEAT, HVAC_MODE_OFF]
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
-    """Set up the iKamand sensors."""
+    """Set up the iKamand thermostats."""
 
     ikamand = hass.data[DOMAIN][config_entry.entry_id][API]
     entities = []
@@ -24,12 +24,17 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 
 class IkamandThermostat(iKamandDevice, ClimateEntity):
-    """Representation of a iKamand thermostat."""
+    """Represents a iKamand thermostat."""
 
     def __init__(self, ikamand, config_entry):
         """Initialize the device."""
         super().__init__(ikamand, config_entry)
         self._ikamand = ikamand
+
+    @property
+    def icon(self):
+        """Return the icon for this sensor."""
+        return "mdi:grill"
 
     @property
     def supported_features(self):

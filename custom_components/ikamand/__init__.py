@@ -6,11 +6,9 @@ import voluptuous as vol
 # Import the device class from the component that you want to support
 from .const import _LOGGER, API, DOMAIN, IKAMAND_COMPONENTS
 from .ikamand import Ikamand
-from datetime import timedelta
 from homeassistant.const import CONF_HOST
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.entity import Entity
-from homeassistant.helpers.event import track_time_interval
 
 CONFIG_SCHEMA = vol.Schema(
     {
@@ -48,7 +46,6 @@ async def async_setup_entry(hass, config_entry):
     await ikamand.get_info()
 
     if not ikamand._online:
-        _LOGGER.error("Failed to connect iKamand at %s", config_entry.data[CONF_HOST])
         raise ConfigEntryNotReady
 
     hass.loop.create_task(ikamand.get_data())

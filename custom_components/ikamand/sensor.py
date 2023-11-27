@@ -1,4 +1,4 @@
-"""Sensor data from iKamand."""
+"""iKamand sensors."""
 from . import iKamandDevice
 from .const import _LOGGER, API, DOMAIN
 from homeassistant.components.sensor import SensorEntity
