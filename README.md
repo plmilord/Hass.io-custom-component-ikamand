@@ -58,6 +58,10 @@ Probe 1 | Sensor | ✓ | N/A
 Probe 2 | Sensor | ✓ | N/A
 Probe 3 | Sensor | ✓ | N/A
 
+Option | Tested
+------ | ------
+Override Home Assistant unit system | ✓
+
 ✓ = Tested and working  
 ? = Not working
 
@@ -65,12 +69,12 @@ Probe 3 | Sensor | ✓ | N/A
 
 ### To do
 
-- [ ] Better error and exception handling to make this component transparent to the user
 - [ ] Bring the ability to configure this custom component via the entries in configuration.yaml
 - [ ] Setup an option to override the Home Assistant unit system for this custom component
 
 ### Completed
 
+- [x] Better error and exception handling to make this component transparent to the user
 - [x] Integrate the main ```ikamand``` program to improve connectivity, better error handling and eliminate dependency
 - [x] Make the sensors work properly
 - [x] Support Celsius to Fahrenheit
