@@ -1,15 +1,14 @@
 """iKamand thermostats."""
 from . import iKamandDevice
 from .const import _LOGGER, API, DOMAIN
-from homeassistant.components.climate import ClimateEntity
-from homeassistant.components.climate.const import SUPPORT_TARGET_TEMPERATURE, HVAC_MODE_HEAT, HVAC_MODE_OFF
+from homeassistant.components.climate import ClimateEntity, ClimateEntityFeature, HVACMode
 from homeassistant.const import ATTR_TEMPERATURE, UnitOfTemperature
 from homeassistant.util.unit_conversion import TemperatureConverter
 
 from datetime import timedelta
 SCAN_INTERVAL = timedelta(seconds=5)
 
-SUPPORT_HVAC = [HVAC_MODE_HEAT, HVAC_MODE_OFF]
+SUPPORT_HVAC = [HVACMode.HEAT, HVACMode.OFF]
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -39,7 +38,7 @@ class IkamandThermostat(iKamandDevice, ClimateEntity):
     @property
     def supported_features(self):
         """Return the list of supported features."""
-        return SUPPORT_TARGET_TEMPERATURE
+        return ClimateEntityFeature.TARGET_TEMPERATURE
 
     @property
     def name(self):
@@ -82,7 +81,7 @@ class IkamandThermostat(iKamandDevice, ClimateEntity):
     @property
     def hvac_mode(self):
         """Return current operation ie. heat, cool, idle."""
-        return HVAC_MODE_HEAT if self._ikamand.cooking else HVAC_MODE_OFF
+        return HVACMode.HEAT if self._ikamand.cooking else HVACMode.OFF
 
     @property
     def hvac_modes(self):
@@ -91,9 +90,9 @@ class IkamandThermostat(iKamandDevice, ClimateEntity):
 
     async def async_set_hvac_mode(self, hvac_mode):
         """Set the operation mode."""
-        if hvac_mode == HVAC_MODE_HEAT:
+        if hvac_mode == HVACMode.HEAT:
             await self._ikamand.start_cook(self.target_temperature)
-        elif hvac_mode == HVAC_MODE_OFF:
+        elif hvac_mode == HVACMode.OFF:
             await self._ikamand.stop_cook()
         else:
             _LOGGER.error("Invalid operation mode provided %s", hvac_mode)
