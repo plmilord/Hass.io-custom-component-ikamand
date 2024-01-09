@@ -60,7 +60,7 @@ Probe 3 | Sensor | ✓ | N/A
 
 Option | Tested
 ------ | ------
-Override Home Assistant unit system | in development
+Override Home Assistant unit system | Not yet implemented!
 
 ## Task List
 
