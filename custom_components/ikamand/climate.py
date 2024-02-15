@@ -1,11 +1,11 @@
 """iKamand thermostats."""
 from . import iKamandDevice
 from .const import _LOGGER, API, DOMAIN
+from datetime import timedelta
 from homeassistant.components.climate import ClimateEntity, ClimateEntityFeature, HVACMode
 from homeassistant.const import ATTR_TEMPERATURE, UnitOfTemperature
 from homeassistant.util.unit_conversion import TemperatureConverter
 
-from datetime import timedelta
 SCAN_INTERVAL = timedelta(seconds=5)
 
 SUPPORT_HVAC = [HVACMode.HEAT, HVACMode.OFF]
@@ -24,6 +24,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 class IkamandThermostat(iKamandDevice, ClimateEntity):
     """Represents a iKamand thermostat."""
+    _enable_turn_on_off_backwards_compatibility = False
 
     def __init__(self, ikamand, config_entry):
         """Initialize the device."""

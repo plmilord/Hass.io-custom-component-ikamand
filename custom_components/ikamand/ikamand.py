@@ -1,13 +1,12 @@
-"""
-Python wrapper package for the Ikamand.
+"""iKamand integration."""
 
-This code is released under the terms of the MIT license. See the LICENSE
-file for more details.
-"""
-import aiohttp
 import asyncio
+import logging
 import requests
 import time
+
+urllib3_logger = logging.getLogger('urllib3')
+urllib3_logger.setLevel(logging.CRITICAL)
 
 from .const import (
     _LOGGER,
@@ -56,7 +55,7 @@ class Ikamand:
         loop = asyncio.get_running_loop()
 
         try:
-            response = await loop.run_in_executor(None, lambda: requests.get(url))
+            response = await loop.run_in_executor(None, lambda: requests.get(url, timeout=10))
 
             if response.status_code in GOOD_HTTP_CODES:
                 result = parse_qs(response.text)
@@ -67,10 +66,7 @@ class Ikamand:
 
             #_LOGGER.info("self._info = %s", self._info)
 
-        except requests.RequestException as e:
-            self._online = False
-
-        except Exception as e:
+        except (requests.RequestException, asyncio.TimeoutError):
             self._online = False
 
     async def get_data(self):
@@ -81,21 +77,25 @@ class Ikamand:
             loop = asyncio.get_running_loop()
 
             try:
-                response = await loop.run_in_executor(None, lambda: requests.get(url))
+                response = await loop.run_in_executor(None, lambda: requests.get(url, timeout=10))
 
                 if response.status_code in GOOD_HTTP_CODES:
                     result = parse_qs(response.text)
-                    self._data = result
-                    self._online = True
+
+                    if 'time' in result and int(result['time'][0]) < 40:
+                        self._data = {}
+                        self._online = False
+                    else:
+                        self._data = result
+                        self._online = True
+
                 else:
+                    self._data = {}
                     self._online = False
 
                 #_LOGGER.info("self._data = %s", self._data)
 
-            except requests.RequestException as e:
-                self._online = False
-
-            except Exception as e:
+            except (requests.RequestException, asyncio.TimeoutError):
                 self._online = False
 
             await asyncio.sleep(5)
@@ -118,17 +118,14 @@ class Ikamand:
         loop = asyncio.get_running_loop()
 
         try:
-            response = await loop.run_in_executor(None, lambda: requests.post(url, headers=self.headers, data=data))
+            response = await loop.run_in_executor(None, lambda: requests.post(url, headers=self.headers, data=data, timeout=10))
 
             if response.status_code in GOOD_HTTP_CODES:
                 self._online = True
             else:
                 self._online = False
 
-        except requests.RequestException as e:
-            self._online = False
-
-        except Exception as e:
+        except (requests.RequestException, asyncio.TimeoutError):
             self._online = False
 
     async def stop_cook(self):
@@ -139,26 +136,24 @@ class Ikamand:
             COOK_START: 0,
             COOK_ID: "",
             TARGET_PIT_TEMP: 0,
-            TARGET_FOOD_TEMP: 0,
-            FOOD_PROBE: 0,
-            CURRENT_TIME: current_time,
             COOK_END_TIME: 0,
+            FOOD_PROBE: 0,
+            TARGET_FOOD_TEMP: 0,
+            UNKNOWN_SEND_VAR1: 0,
+            CURRENT_TIME: current_time,
         }
 
         loop = asyncio.get_running_loop()
 
         try:
-            response = await loop.run_in_executor(None, lambda: requests.post(url, headers=self.headers, data=data))
+            response = await loop.run_in_executor(None, lambda: requests.post(url, headers=self.headers, data=data, timeout=10))
 
             if response.status_code in GOOD_HTTP_CODES:
                 self._online = True
             else:
                 self._online = False
 
-        except requests.RequestException as e:
-            self._online = False
-
-        except Exception as e:
+        except (requests.RequestException, asyncio.TimeoutError):
             self._online = False
 
     async def start_grill(self):
@@ -174,17 +169,14 @@ class Ikamand:
         loop = asyncio.get_running_loop()
 
         try:
-            response = await loop.run_in_executor(None, lambda: requests.post(url, headers=self.headers, data=data))
+            response = await loop.run_in_executor(None, lambda: requests.post(url, headers=self.headers, data=data, timeout=10))
 
             if response.status_code in GOOD_HTTP_CODES:
                 self._online = True
             else:
                 self._online = False
 
-        except requests.RequestException as e:
-            self._online = False
-
-        except Exception as e:
+        except (requests.RequestException, asyncio.TimeoutError):
             self._online = False
 
     async def stop_grill(self):
@@ -200,17 +192,14 @@ class Ikamand:
         loop = asyncio.get_running_loop()
 
         try:
-            response = await loop.run_in_executor(None, lambda: requests.post(url, headers=self.headers, data=data))
+            response = await loop.run_in_executor(None, lambda: requests.post(url, headers=self.headers, data=data, timeout=10))
 
             if response.status_code in GOOD_HTTP_CODES:
                 self._online = True
             else:
                 self._online = False
 
-        except requests.RequestException as e:
-            self._online = False
-
-        except Exception as e:
+        except (requests.RequestException, asyncio.TimeoutError):
             self._online = False
 
     @property

@@ -1,11 +1,11 @@
 """iKamand sensors."""
 from . import iKamandDevice
 from .const import _LOGGER, API, DOMAIN
+from datetime import timedelta
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.const import PERCENTAGE, UnitOfTemperature
 from homeassistant.util.unit_conversion import TemperatureConverter
 
-from datetime import timedelta
 SCAN_INTERVAL = timedelta(seconds=1)
 
 
