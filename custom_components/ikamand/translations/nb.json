@@ -1,0 +1,18 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Denne iKamand-enheten er allerede konfigurert"
+        },
+        "error": {
+            "cannot_connect": "Kan ikke koble til denne iKamand-enheten, prøv igjen",
+            "unknown": "Ukjent feil"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Vertsnavn eller IP-adresse"
+                }
+            }
+        }
+    }
+}

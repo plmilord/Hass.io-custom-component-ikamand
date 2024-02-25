@@ -1,0 +1,18 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "This iKamand device is already configured"
+        },
+        "error": {
+            "cannot_connect": "Unable to connect to this iKamand device, please try again",
+            "unknown": "Unexpected error"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host name or IP address"
+                }
+            }
+        }
+    }
+}
