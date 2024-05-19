@@ -46,21 +46,21 @@ class SetFanDuration(iKamandDevice, NumberEntity):
         return "mdi:fan-clock"
 
     @property
-    def native_max_value(self) -> float:
+    def native_max_value(self) -> int:
         """Return the maximum value."""
         return 30
 
     @property
-    def native_min_value(self) -> float:
+    def native_min_value(self) -> int:
         """Return the minimum value."""
         return 0
 
     @property
-    def native_value(self) -> float:
+    def native_value(self) -> int:
         """Return the value of the number."""
         return self._ikamand.set_fan_duration
 
-    async def async_set_native_value(self, value: float) -> None:
+    async def async_set_native_value(self, value: int) -> None:
         """Set value of the number."""
         self._ikamand._set_fan_duration = int(value)
 
@@ -101,7 +101,7 @@ class ProbeTargetTemperature(iKamandDevice, NumberEntity):
         return "mdi:thermometer-alert"
 
     @property
-    def native_max_value(self) -> float:
+    def native_max_value(self) -> int:
         """Return the maximum value."""
         """The iKamand can control between 150°F-500°F (66°C-260°C)"""
         if self.hass.config.units.temperature_unit == UnitOfTemperature.FAHRENHEIT:
@@ -109,26 +109,19 @@ class ProbeTargetTemperature(iKamandDevice, NumberEntity):
         return 260
 
     @property
-    def native_min_value(self) -> float:
+    def native_min_value(self) -> int:
         """Return the minimum value."""
-        """The iKamand can control between 150°F-500°F (66°C-260°C)"""
-        if self.hass.config.units.temperature_unit == UnitOfTemperature.FAHRENHEIT:
-            return 150
-        return 66
+        return 0
 
     @property
-    def native_value(self) -> float:
+    def native_value(self) -> int:
         """Return the value of the number."""
-        if getattr(self._ikamand, f"_probe_{self._name}_target_temperature") == 0:
-            if self.hass.config.units.temperature_unit == UnitOfTemperature.FAHRENHEIT:
-                return setattr(self._ikamand, f"_probe_{self._name}_target_temperature", 150)
-            return setattr(self._ikamand, f"_probe_{self._name}_target_temperature", 66)
-        else:
-            return getattr(self._ikamand, f"_probe_{self._name}_target_temperature")
+        return getattr(self._ikamand, f"_probe_{self._name}_target_temperature")
 
-    async def async_set_native_value(self, value: float) -> None:
+    async def async_set_native_value(self, value: int) -> None:
         """Set value of the number."""
         setattr(self._ikamand, f"_probe_{self._name}_target_temperature", int(value))
+        await self._ikamand.start_cooking(self._name)
 
     @property
     def available(self) -> bool:

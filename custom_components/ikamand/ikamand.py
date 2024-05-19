@@ -126,8 +126,8 @@ class Ikamand:
         except (requests.RequestException, asyncio.TimeoutError):
             self._online = False
 
-    async def start_cook(self, target_pit_temp: int):
-        """Start cooking with the iKamand."""
+    async def start_ikamand(self, target_pit_temp: int):
+        """Start the iKamand."""
         current_time = int(time.time())
         payload = {
             COOK_START: 1,
@@ -142,8 +142,8 @@ class Ikamand:
 
         await self.post_commands(payload)
 
-    async def stop_cook(self):
-        """Stop cooking with the iKamand."""
+    async def stop_ikamand(self):
+        """Stop the iKamand."""
         current_time = int(time.time())
         payload = {
             COOK_START: 0,
@@ -156,7 +156,22 @@ class Ikamand:
             CURRENT_TIME: current_time,
         }
 
+        self._starting = False
+
         await self.post_commands(payload)
+
+    async def start_cooking(self, food_probe: int):
+        """Start cooking."""
+        current_time = int(time.time())
+        payload = {
+            COOK_START: 1,
+            COOK_ID: food_probe,
+            FOOD_PROBE: food_probe,
+            TARGET_FOOD_TEMP: getattr(self, f"probe_{food_probe}_target_temperature"),
+        }
+
+        if self.cooking:
+            await self.post_commands(payload)
 
     async def fire_it_up(self):
         """Start the iKamand fan at 100% for the selected duration."""
@@ -231,6 +246,21 @@ class Ikamand:
         await self.post_commands(payload)
 
     @property
+    def cooking(self):
+        """Return cooking status."""
+        return self._data.get(COOK_START, [0])[0] == "1"
+
+    @property
+    def data(self):
+        """Return data."""
+        return self._data
+
+    @property
+    def fan_speed(self):
+        """Return current fan speed %."""
+        return int(self._data.get(FAN_SPEED, ["0"])[0])
+
+    @property
     def firmware_version(self):
         """Return device firmware version."""
         return self._info.get(FW_VERSION, [0])[0]
@@ -241,19 +271,9 @@ class Ikamand:
         return self._info.get(MAC_ADDRESS, [0])[0]
 
     @property
-    def data(self):
-        """Return data."""
-        return self._data
-
-    @property
-    def cooking(self):
-        """Return cooking status."""
-        return self._data.get(COOK_START, [0])[0] == "1"
-
-    @property
-    def starting(self):
-        """Return starting status."""
-        return self._starting
+    def online(self):
+        """Return if reachable."""
+        return self._online
 
     @property
     def pit_temp(self):
@@ -265,11 +285,6 @@ class Ikamand:
         )
 
     @property
-    def target_pit_temp(self):
-        """Return target pit temperature."""
-        return int(self._data.get(TARGET_PIT_TEMP, [0])[0])
-
-    @property
     def probe_1(self):
         """Return current temperature of probe 1."""
         return (
@@ -277,6 +292,11 @@ class Ikamand:
             if self._data.get(PROBE_1, ["400"])[0] not in FALSE_TEMPS
             else None
         )
+
+    @property
+    def probe_1_target_temperature(self):
+        """Return the target temperature for probe 1."""
+        return self._probe_1_target_temperature
 
     @property
     def probe_2(self):
@@ -288,6 +308,11 @@ class Ikamand:
         )
 
     @property
+    def probe_2_target_temperature(self):
+        """Return the target temperature for probe 2."""
+        return self._probe_2_target_temperature
+
+    @property
     def probe_3(self):
         """Return current temperature of probe 3."""
         return (
@@ -297,9 +322,9 @@ class Ikamand:
         )
 
     @property
-    def fan_speed(self):
-        """Return current fan speed %."""
-        return int(self._data.get(FAN_SPEED, ["0"])[0])
+    def probe_3_target_temperature(self):
+        """Return the target temperature for probe 3."""
+        return self._probe_3_target_temperature
 
     @property
     def set_fan_duration(self):
@@ -307,21 +332,11 @@ class Ikamand:
         return self._set_fan_duration
 
     @property
-    def probe_1_target_temperature(self):
-        """Return the target temperature for probe 1."""
-        return self._probe_1_target_temperature
+    def starting(self):
+        """Return starting status."""
+        return self._starting
 
     @property
-    def probe_2_target_temperature(self):
-        """Return the target temperature for probe 2."""
-        return self._probe_2_target_temperature
-
-    @property
-    def probe_3_target_temperature(self):
-        """Return the target temperature for probe 3."""
-        return self._probe_3_target_temperature
-
-    @property
-    def online(self):
-        """Return if reachable."""
-        return self._online
+    def target_pit_temp(self):
+        """Return target pit temperature."""
+        return int(self._data.get(TARGET_PIT_TEMP, [0])[0])

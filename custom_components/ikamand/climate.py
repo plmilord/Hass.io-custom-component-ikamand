@@ -92,9 +92,9 @@ class IkamandThermostat(iKamandDevice, ClimateEntity):
     async def async_set_hvac_mode(self, hvac_mode):
         """Set the operation mode."""
         if hvac_mode == HVACMode.HEAT:
-            await self._ikamand.start_cook(self.target_temperature)
+            await self._ikamand.start_ikamand(self.target_temperature)
         elif hvac_mode == HVACMode.OFF:
-            await self._ikamand.stop_cook()
+            await self._ikamand.stop_ikamand()
         else:
             _LOGGER.error("Invalid operation mode provided %s", hvac_mode)
 
@@ -103,7 +103,7 @@ class IkamandThermostat(iKamandDevice, ClimateEntity):
         temperature = kwargs.get(ATTR_TEMPERATURE)
         if self.hass.config.units.temperature_unit == UnitOfTemperature.FAHRENHEIT:
             temperature = round(TemperatureConverter.convert(temperature, UnitOfTemperature.FAHRENHEIT, UnitOfTemperature.CELSIUS))
-        await self._ikamand.start_cook(temperature)
+        await self._ikamand.start_ikamand(temperature)
 
     @property
     def min_temp(self):
